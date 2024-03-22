@@ -1,19 +1,33 @@
 // src/components/QuestionBank.tsx
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-
-import { Question } from '../types';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../app/store';
+import { AppDispatch, RootState } from '../app/store';
 import {
   addFavorite,
   removeFavorite
 } from '../features/favorites/favoritesSlice';
+import { fetchQuestionsAsync } from '../features/questions/questionsSlice';
 
 const QuestionBank: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+
+  // 选择questions状态，loading状态和error状态
+  const questions = useSelector(
+    (state: RootState) => state.questions.questions
+  );
+  const loading = useSelector((state: RootState) => state.questions.loading);
+  const error = useSelector((state: RootState) => state.questions.error);
+
+  useEffect(() => {
+    // 首次加载数据时，分派fetchQuestionsAsync action
+    if (questions.length === 0 && !loading) {
+      dispatch(fetchQuestionsAsync());
+    }
+  }, []);
+
   // 使用 useSelector 钩子来获取 favorites.ids状态
   const favoriteIds = useSelector((state: RootState) => state.favorites.ids);
-  const dispatch = useDispatch();
 
   const handleFavorite = (questionId: number) => {
     favoriteIds.includes(questionId)
@@ -21,39 +35,11 @@ const QuestionBank: React.FC = () => {
       : dispatch(addFavorite(questionId));
   };
 
-  // 假设有静态数据，实际开发中可能需要从API获取
-  const [questions, setQuestions] = useState<Question[]>([
-    {
-      id: 1,
-      title: 'Example Question 1',
-      type: 'Multiple Choice',
-      difficulty: 'Easy'
-    },
-    {
-      id: 2,
-      title: 'Example Question 2',
-      type: 'Multiple Choice',
-      difficulty: 'medium'
-    },
-    {
-      id: 3,
-      title: 'Example Question 3',
-      type: 'Multiple Choice',
-      difficulty: 'hard'
-    }
-    // 添加更多题目...
-  ]);
-
   const [filter, setFilter] = useState({
     type: '',
     difficulty: '',
     keyword: ''
   });
-
-  // 假设从API获取题目数据
-  useEffect(() => {
-    // fetchQuestions();
-  }, []);
 
   // 更新筛选条件
   const handleFilterChange = (
@@ -67,17 +53,40 @@ const QuestionBank: React.FC = () => {
   };
 
   // 根据筛选条件过滤题目
-  const filteredQuestions = questions.filter(
-    (question) =>
-      (filter.type ? question.type === filter.type : true) &&
-      (filter.difficulty ? question.difficulty === filter.difficulty : true) &&
-      (filter.keyword
+  const filteredQuestions = () => {
+    // 首先检查questions是否为空或者未定义
+    if (!questions) {
+      // 如果questions是undefined或者null，返回一个空数组
+      return [];
+    }
+
+    // 然后使用filter函数来过滤questions
+    return questions.filter((question) => {
+      // 检查filter.type是否存在，如果存在则比较question.type
+      const typeFilter = filter.type ? question.type === filter.type : true;
+      // 检查filter.difficulty是否存在，如果存在则比较question.difficulty
+      const difficultyFilter = filter.difficulty
+        ? question.difficulty === filter.difficulty
+        : true;
+      // 检查filter.keyword是否存在，如果存在则比较question.title（不区分大小写）是否包含keyword（也不区分大小写）
+      const keywordFilter = filter.keyword
         ? question.title.toLowerCase().includes(filter.keyword.toLowerCase())
-        : true)
-  );
+        : true;
+
+      // 只有当所有过滤条件都满足时，才包含当前问题
+      return typeFilter && difficultyFilter && keywordFilter;
+    });
+  };
+  const filteredQuestionsList = filteredQuestions();
+  console.log('filteredQuestionsList', filteredQuestionsList);
 
   return (
     <div>
+      <nav>
+        <Link to={`/`}>index</Link>
+        <hr />
+        <Link to={`/favorites`}>favorites</Link>
+      </nav>
       <h2>题库</h2>
 
       <div>
@@ -101,6 +110,13 @@ const QuestionBank: React.FC = () => {
         />
       </div>
 
+      {/* 处理error状态 */}
+      {error && <div>Error: {error}</div>}
+      {/*/!* 处理加载中的状态 *!/*/}
+      {/*{loading && <div>Loading...</div>}*/}
+      {/*/!* 处理首次加载数据 *!/*/}
+      {/*{questions.length === 0 && !loading && <div>No questions available.</div>}*/}
+
       <table>
         <thead>
           <tr>
@@ -108,11 +124,12 @@ const QuestionBank: React.FC = () => {
             <th>题目名称</th>
             <th>题目类型</th>
             <th>难度</th>
-            <th>操作</th> {/* 添加操作列，用于查看详情 */}
+            <th>操作</th>
+            {/* 添加操作列，用于查看详情 */}
           </tr>
         </thead>
         <tbody>
-          {filteredQuestions.map((question) => (
+          {filteredQuestionsList.map((question) => (
             <tr key={question.id}>
               <td>{question.id}</td>
               <td>{question.title}</td>

@@ -3,27 +3,16 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import QuestionBank from './components/QuestionBank';
 import QuestionDetails from './components/QuestionDetails';
 import { Question } from './types';
+import FavoritesList from './components/FavoritesList';
 
 const App: React.FC = () => {
-  // 假设数据
-  const mockQuestion: Question = {
-    id: 1,
-    title: 'Example Question',
-    type: 'Multiple Choice',
-    difficulty: 'Easy',
-    description: 'This is an example description.',
-    example: 'Example content'
-  };
-
   return (
     <Router>
       <div className="App">
         <Routes>
           <Route path="/" element={<QuestionBank />} />
-          <Route
-            path="/question/:id"
-            element={<QuestionDetails question={mockQuestion} />}
-          />
+          <Route path="/question/:id" element={<QuestionDetails />} />
+          <Route path="/favorites" element={<FavoritesList />} />
         </Routes>
       </div>
     </Router>

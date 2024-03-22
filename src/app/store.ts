@@ -3,18 +3,21 @@ import { configureStore } from '@reduxjs/toolkit';
 import favoritesReducer, {
   FavoritesState
 } from '../features/favorites/favoritesSlice';
-import questionsReducer from '../features/questions/questionsSlice';
-import { Question } from '../types';
+import questionsReducer, {
+  QuestionsState
+} from '../features/questions/questionsSlice';
 
 // 定义 RootState 类型，它包含了所有的reducer
 export interface RootState {
   favorites: FavoritesState;
-  questions: Question[];
+  questions: QuestionsState;
 }
 
 export const store = configureStore({
   reducer: {
     favorites: favoritesReducer,
-    questionsReducer: questionsReducer
+    questions: questionsReducer
   }
 });
+
+export type AppDispatch = typeof store.dispatch;

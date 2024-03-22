@@ -25,7 +25,39 @@
       "example": "The artist was a master during the Italian Renaissance period."
     },
     {
+      "id": 14,
+      "title": "What is the speed of light in a vacuum?",
+      "type": "2",
+      "difficulty": "Hard",
+      "description": "The speed of light in a vacuum is a fundamental constant of nature.",
+      "example": "It is approximately 299,792 kilometers per second."
+    },
+    {
+      "id": 13,
+      "title": "Who painted the Mona Lisa?",
+      "type": "2",
+      "difficulty": "Easy",
+      "description": "This famous painting is one of the most recognized artworks in the world.",
+      "example": "The artist was a master during the Italian Renaissance period."
+    },
+    {
       "id": 4,
+      "title": "W32323ht in a vacuum?",
+      "type": "2",
+      "difficulty": "Hard",
+      "description": "The 3232s a fundamental constant of nature.",
+      "example": "It is approximately 5454 per second."
+    },
+    {
+      "id": 30,
+      "title": "Who painted the Mona Lisa?",
+      "type": "2",
+      "difficulty": "Easy",
+      "description": "This famous painting is one of the most recognized artworks in the world.",
+      "example": "The artist was a master during the Italian Renaissance period."
+    },
+    {
+      "id": 41,
       "title": "What is the speed of light in a vacuum?",
       "type": "2",
       "difficulty": "Hard",

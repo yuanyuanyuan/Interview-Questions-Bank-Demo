@@ -13,8 +13,13 @@ const QuestionDetails: React.FC = () => {
   ); // 假设你的Redux state是这么组织的
 
   // 根据id找到具体的问题
-  const question = questions.find((q) => q.id);
-
+  const question = questions.find((q) => {
+    // 使用类型守卫确保id是字符串
+    if (typeof id === 'string') {
+      return q.id === parseInt(id);
+    }
+    return false;
+  });
   if (!question) {
     return <div>题目不存在或已被删除</div>;
   }

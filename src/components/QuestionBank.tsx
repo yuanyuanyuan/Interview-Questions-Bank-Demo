@@ -16,20 +16,22 @@ const QuestionBank: React.FC = () => {
   const favoriteIds = useSelector((state: RootState) => state.favorites.ids);
   // 添加分页状态
   const [currentPage, setCurrentPage] = useState(1);
-  const questionsPerPage = 2; // 每页显示的问题数量
+  const questionsPerPage = 3; // 每页显示的问题数量
   // 选择questions状态，loading状态和error状态
   const questions = useSelector(
     (state: RootState) => state.questions.questions
   );
   const loading = useSelector((state: RootState) => state.questions.loading);
   const error = useSelector((state: RootState) => state.questions.error);
+  // 在QuestionBank组件内部添加新状态
+  const [sortedColumn, setSortedColumn] = useState('');
 
   useEffect(() => {
     // 首次加载数据时，分派fetchQuestionsAsync action
     if (questions.length === 0 && !loading) {
       dispatch(fetchQuestionsAsync());
     }
-  }, []);
+  }, [loading, questions.length]);
 
   const handleFavorite = (questionId: number) => {
     favoriteIds.includes(questionId)
@@ -82,11 +84,32 @@ const QuestionBank: React.FC = () => {
   const filteredQuestionsList = filteredQuestions();
   console.log('filteredQuestionsList', filteredQuestionsList);
 
+  // 新增排序状态
+  const [sortDirection, setSortDirection] = useState<
+    'ascending' | 'descending'
+  >('ascending');
+
+  const handleSort = useCallback((columnName: any) => {
+    setSortedColumn(columnName);
+    // @ts-ignore
+    setSortDirection((prevDirection) =>
+      // @ts-ignore
+      prevDirection === 'asc' ? 'desc' : 'asc'
+    );
+  }, []);
+
   // 使用 useMemo 来缓存计算出的分页数据
   const paginatedQuestions = useMemo(() => {
     const start = (currentPage - 1) * questionsPerPage;
     const end = start + questionsPerPage;
-    return filteredQuestionsList.slice(start, end);
+    return filteredQuestionsList.slice(start, end).sort((a, b) => {
+      // @ts-ignore
+      if (sortDirection === 'asc') {
+        return a.id - b.id; // 以 id 为例进行升序排序
+      } else {
+        return b.id - a.id; // 降序排序
+      }
+    });
   }, [currentPage, questionsPerPage, filteredQuestionsList]); // 当这些依赖项变化时，才会重新计算
 
   // 分页导航
@@ -142,10 +165,26 @@ const QuestionBank: React.FC = () => {
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
-            <th>ID</th>
-            <th>题目名称</th>
-            <th>题目类型</th>
-            <th>难度</th>
+            <th onClick={() => handleSort('id')}>
+              ID{' '}
+              {sortedColumn === 'id' &&
+                (sortDirection === 'ascending' ? '↑' : '↓')}
+            </th>
+            <th onClick={() => handleSort('title')}>
+              题目名称{' '}
+              {sortedColumn === 'title' &&
+                (sortDirection === 'ascending' ? '↑' : '↓')}
+            </th>
+            <th onClick={() => handleSort('type')}>
+              题目类型{' '}
+              {sortedColumn === 'type' &&
+                (sortDirection === 'ascending' ? '↑' : '↓')}
+            </th>
+            <th onClick={() => handleSort('difficulty')}>
+              难度{' '}
+              {sortedColumn === 'difficulty' &&
+                (sortDirection === 'ascending' ? '↑' : '↓')}
+            </th>
             <th>操作</th>
             {/* 添加操作列，用于查看详情 */}
           </tr>

@@ -1,0 +1,38 @@
+{
+  "questions": [
+    {
+      "id": 1,
+      "title": "What is the capital of France?",
+      "type": "Geography",
+      "difficulty": "Easy",
+      "description": "The capital and most populous city of France.",
+      "example": "The answer is a well-known city that is often referred to as the \"City of Light\"."
+    },
+    {
+      "id": 2,
+      "title": "What is the chemical symbol for water?",
+      "type": "Chemistry",
+      "difficulty": "Medium",
+      "description": "The chemical formula for water consists of two elements.",
+      "example": "The symbol is H2O, representing two hydrogen atoms and one oxygen atom."
+    },
+    {
+      "id": 3,
+      "title": "Who painted the Mona Lisa?",
+      "type": "Art History",
+      "difficulty": "Easy",
+      "description": "This famous painting is one of the most recognized artworks in the world.",
+      "example": "The artist was a master during the Italian Renaissance period."
+    },
+    {
+      "id": 4,
+      "title": "What is the speed of light in a vacuum?",
+      "type": "Physics",
+      "difficulty": "Hard",
+      "description": "The speed of light in a vacuum is a fundamental constant of nature.",
+      "example": "It is approximately 299,792 kilometers per second."
+    }
+  ],
+  "page": 1,
+  "totalPages": 5
+}

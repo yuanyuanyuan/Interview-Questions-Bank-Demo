@@ -7,12 +7,14 @@ import {
 } from '@reduxjs/toolkit';
 import { Question } from '../../types';
 import { ActionReducerMapBuilder } from '@reduxjs/toolkit';
+import { fetchWrapper } from '../../utils/fetchUtil';
 
-type ApiError = {
-  message: string;
-  response: Response; // 假设response是一个有效的Response类型
-};
-type CustomSerializedError = SerializedError & ApiError;
+// QuestionsResponse类型定义
+export interface QuestionsResponse {
+  questions: Question[];
+  page: number;
+  totalPages: number;
+}
 
 export interface QuestionsState {
   questions: Question[];
@@ -30,9 +32,8 @@ const initialState: QuestionsState = {
 export const fetchQuestionsAsync = createAsyncThunk(
   'questions/fetchQuestions',
   async (payload, thunkAPI) => {
-    const response = await fetch('your-api-endpoint');
-    const data = await response.json();
-    return data;
+    const data: QuestionsResponse = await fetchWrapper('your-api-endpoint');
+    return data.questions;
   }
 );
 
@@ -64,11 +65,8 @@ const questionsSlice = createSlice({
       state.loading = false;
     });
     builder.addCase(fetchQuestionsAsync.rejected, (state, action) => {
-      if (action.error) {
-        const error = action.error as CustomSerializedError;
-      } else {
-        state.error = 'An unknown error occurred.';
-      }
+      console.log('action.payload-reject', action.error.message);
+      state.error = action.error.message;
       state.loading = false;
     });
   }

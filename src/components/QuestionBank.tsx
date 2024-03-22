@@ -1,5 +1,5 @@
 // src/components/QuestionBank.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../app/store';
@@ -83,17 +83,22 @@ const QuestionBank: React.FC = () => {
   const filteredQuestionsList = filteredQuestions();
   console.log('filteredQuestionsList', filteredQuestionsList);
 
-  // 计算当前页的问题列表
-  const paginatedQuestions = () => {
+  // 使用 useMemo 来缓存计算出的分页数据
+  const paginatedQuestions = useMemo(() => {
     const start = (currentPage - 1) * questionsPerPage;
     const end = start + questionsPerPage;
     return filteredQuestionsList.slice(start, end);
-  };
+  }, [currentPage, questionsPerPage, filteredQuestionsList]); // 当这些依赖项变化时，才会重新计算
+
   // 分页导航
   const totalPages = Math.ceil(filteredQuestionsList.length / questionsPerPage);
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
+  // 使用 useCallback 来避免 handlePageChange 重新渲染
+  const handlePageChange = useCallback(
+    (page: number) => {
+      setCurrentPage(page);
+    },
+    [setCurrentPage]
+  ); // 依赖项数组中的 setCurrentPage 会在其变化时更新这个回调
 
   return (
     <div>
@@ -144,7 +149,7 @@ const QuestionBank: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {paginatedQuestions().map((question) => (
+          {paginatedQuestions.map((question) => (
             <tr key={question.id}>
               <td>{question.id}</td>
               <td>{question.title}</td>
@@ -163,7 +168,10 @@ const QuestionBank: React.FC = () => {
       {/* 添加页码导航 */}
       <div>
         <button
-          onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
+          onClick={useCallback(
+            () => handlePageChange(currentPage - 1),
+            [handlePageChange, currentPage]
+          )}
         >
           上一页
         </button>
@@ -171,9 +179,10 @@ const QuestionBank: React.FC = () => {
           页码：{currentPage} / {totalPages}
         </span>
         <button
-          onClick={() =>
-            currentPage < totalPages && setCurrentPage(currentPage + 1)
-          }
+          onClick={useCallback(
+            () => handlePageChange(currentPage + 1),
+            [handlePageChange, currentPage]
+          )}
         >
           下一页
         </button>

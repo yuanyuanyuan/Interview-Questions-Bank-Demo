@@ -3,8 +3,24 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 import { Question } from '../types';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../app/store';
+import {
+  addFavorite,
+  removeFavorite
+} from '../features/favorites/favoritesSlice';
 
 const QuestionBank: React.FC = () => {
+  // 使用 useSelector 钩子来获取 favorites.ids状态
+  const favoriteIds = useSelector((state: RootState) => state.favorites.ids);
+  const dispatch = useDispatch();
+
+  const handleFavorite = (questionId: number) => {
+    favoriteIds.includes(questionId)
+      ? dispatch(removeFavorite(questionId))
+      : dispatch(addFavorite(questionId));
+  };
+
   // 假设有静态数据，实际开发中可能需要从API获取
   const [questions, setQuestions] = useState<Question[]>([
     {
@@ -104,6 +120,9 @@ const QuestionBank: React.FC = () => {
               <td>{question.difficulty}</td>
               <td>
                 <Link to={`/question/${question.id}`}>查看详情</Link>
+                <button onClick={() => handleFavorite(question.id)}>
+                  {favoriteIds.includes(question.id) ? '取消收藏' : '收藏'}
+                </button>
               </td>
             </tr>
           ))}

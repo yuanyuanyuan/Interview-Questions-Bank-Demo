@@ -3,7 +3,6 @@ import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import { RootState } from '../app/store';
-import { fetchQuestionsAsync } from '../features/questions/questionsSlice';
 import { Link } from 'react-router-dom';
 
 const FavoritesList: React.FC = () => {

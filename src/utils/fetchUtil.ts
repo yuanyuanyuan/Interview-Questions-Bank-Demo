@@ -2,7 +2,6 @@
 
 import mockQuestionsOk from '../mock/questions_ok.json';
 import mockQuestionsErr from '../mock/questions_error.json';
-import { rejects } from 'node:assert';
 
 interface FetchOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE';

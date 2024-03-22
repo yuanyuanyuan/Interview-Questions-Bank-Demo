@@ -1,10 +1,5 @@
 // src/features/questions/questionsSlice.ts
-import {
-  createSlice,
-  PayloadAction,
-  createAsyncThunk,
-  SerializedError
-} from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { Question } from '../../types';
 import { ActionReducerMapBuilder } from '@reduxjs/toolkit';
 import { fetchWrapper } from '../../utils/fetchUtil';

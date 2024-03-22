@@ -1,7 +1,8 @@
 // src/app/store.ts
 import { configureStore } from '@reduxjs/toolkit';
 import favoritesReducer, {
-  FavoritesState
+  FavoritesState,
+  setFavorites
 } from '../features/favorites/favoritesSlice';
 import questionsReducer, {
   QuestionsState,
@@ -25,6 +26,11 @@ export const store = configureStore({
 const savedQuestions = JSON.parse(localStorage.getItem('questions') || '[]');
 if (savedQuestions.length) {
   store.dispatch(setQuestions(savedQuestions));
+}
+
+const savedFavorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+if (savedFavorites.length) {
+  store.dispatch(setFavorites(savedFavorites));
 }
 
 export type AppDispatch = typeof store.dispatch;

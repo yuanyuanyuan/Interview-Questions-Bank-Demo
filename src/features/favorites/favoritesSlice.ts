@@ -24,10 +24,20 @@ const favoritesSlice = createSlice({
     removeFavorite: (state, action: PayloadAction<number>) => {
       state.ids = state.ids.filter((id) => id !== action.payload);
       localStorage.setItem('favorites', JSON.stringify(state.ids));
+    },
+    setFavorites: (state, action: PayloadAction<number[]>) => {
+      // 清空当前的收藏ID，然后设置新的收藏ID
+      state.ids = action.payload;
+      localStorage.setItem('favorites', JSON.stringify(action.payload));
+    },
+    clearFavorites: (state) => {
+      state.ids = [];
+      localStorage.removeItem('favorites');
     }
   }
 });
 
-export const { addFavorite, removeFavorite } = favoritesSlice.actions;
+export const { addFavorite, removeFavorite, setFavorites, clearFavorites } =
+  favoritesSlice.actions;
 
 export default favoritesSlice.reducer;

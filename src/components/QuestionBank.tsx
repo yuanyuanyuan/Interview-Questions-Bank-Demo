@@ -11,6 +11,9 @@ import { fetchQuestionsAsync } from '../features/questions/questionsSlice';
 
 const QuestionBank: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
+  // 添加分页状态
+  const [currentPage, setCurrentPage] = useState(1);
+  const questionsPerPage = 2; // 每页显示的问题数量
 
   // 选择questions状态，loading状态和error状态
   const questions = useSelector(
@@ -80,6 +83,18 @@ const QuestionBank: React.FC = () => {
   const filteredQuestionsList = filteredQuestions();
   console.log('filteredQuestionsList', filteredQuestionsList);
 
+  // 计算当前页的问题列表
+  const paginatedQuestions = () => {
+    const start = (currentPage - 1) * questionsPerPage;
+    const end = start + questionsPerPage;
+    return filteredQuestionsList.slice(start, end);
+  };
+  // 分页导航
+  const totalPages = Math.ceil(filteredQuestionsList.length / questionsPerPage);
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
   return (
     <div>
       <nav>
@@ -129,7 +144,7 @@ const QuestionBank: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {filteredQuestionsList.map((question) => (
+          {paginatedQuestions().map((question) => (
             <tr key={question.id}>
               <td>{question.id}</td>
               <td>{question.title}</td>
@@ -145,6 +160,24 @@ const QuestionBank: React.FC = () => {
           ))}
         </tbody>
       </table>
+      {/* 添加页码导航 */}
+      <div>
+        <button
+          onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
+        >
+          上一页
+        </button>
+        <span>
+          页码：{currentPage} / {totalPages}
+        </span>
+        <button
+          onClick={() =>
+            currentPage < totalPages && setCurrentPage(currentPage + 1)
+          }
+        >
+          下一页
+        </button>
+      </div>
     </div>
   );
 };

@@ -1,12 +1,19 @@
 // src/components/QuestionDetails.tsx
 import React from 'react';
-import { Question } from '../types';
+import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { RootState } from '../app/store';
 
-interface Props {
-  question: Question; // 传入的题目详情
-}
+const QuestionDetails: React.FC = () => {
+  // 使用 useParams 钩子获取路由参数
+  const { id } = useParams<{ id: string }>();
+  const questions = useSelector(
+    (state: RootState) => state.questions.questions
+  ); // 假设你的Redux state是这么组织的
 
-const QuestionDetails: React.FC<Props> = ({ question }) => {
+  // 根据id找到具体的问题
+  const question = questions.find((q) => q.id);
+
   if (!question) {
     return <div>题目不存在或已被删除</div>;
   }

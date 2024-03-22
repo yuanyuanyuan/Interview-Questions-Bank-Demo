@@ -101,14 +101,6 @@ const QuestionBank: React.FC = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <nav className="flex justify-between border-b p-4">
-        <Link to={`/`} className="text-blue-500 hover:text-blue-700">
-          index
-        </Link>
-        <Link to={`/favorites`} className="text-blue-500 hover:text-blue-700">
-          favorites
-        </Link>
-      </nav>
       <h2 className="text-2xl font-bold text-center my-4">题库</h2>
 
       <div className="flex flex-col md:flex-row p-4">

@@ -28,9 +28,63 @@ const QuestionBank: React.FC = () => {
     // 添加更多题目...
   ]);
 
+  const [filter, setFilter] = useState({
+    type: '',
+    difficulty: '',
+    keyword: ''
+  });
+
+  // 假设从API获取题目数据
+  useEffect(() => {
+    // fetchQuestions();
+  }, []);
+
+  // 更新筛选条件
+  const handleFilterChange = (
+    e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>
+  ) => {
+    const { name, value } = e.target;
+    setFilter((prevFilter) => ({
+      ...prevFilter,
+      [name]: value
+    }));
+  };
+
+  // 根据筛选条件过滤题目
+  const filteredQuestions = questions.filter(
+    (question) =>
+      (filter.type ? question.type === filter.type : true) &&
+      (filter.difficulty ? question.difficulty === filter.difficulty : true) &&
+      (filter.keyword
+        ? question.title.toLowerCase().includes(filter.keyword.toLowerCase())
+        : true)
+  );
+
   return (
     <div>
       <h2>题库</h2>
+
+      <div>
+        <select name="type" onChange={handleFilterChange}>
+          <option value="">所有类型</option>
+          <option value="Multiple Choice">选择题</option>
+          <option value="True or False">判断题</option>
+          {/* 其他类型 */}
+        </select>
+        <select name="difficulty" onChange={handleFilterChange}>
+          <option value="">所有难度</option>
+          <option value="Easy">简单</option>
+          <option value="Medium">中等</option>
+          <option value="Hard">困难</option>
+        </select>
+        <input
+          type="text"
+          name="keyword"
+          placeholder="搜索题目"
+          onChange={handleFilterChange}
+        />
+      </div>
+
       <table>
         <thead>
           <tr>
@@ -42,15 +96,14 @@ const QuestionBank: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {questions.map((question) => (
+          {filteredQuestions.map((question) => (
             <tr key={question.id}>
               <td>{question.id}</td>
               <td>{question.title}</td>
               <td>{question.type}</td>
               <td>{question.difficulty}</td>
               <td>
-                <Link to={`/question/${question.id}`}>查看详情</Link>{' '}
-                {/* 使用Link组件跳转到详情页面 */}
+                <Link to={`/question/${question.id}`}>查看详情</Link>
               </td>
             </tr>
           ))}

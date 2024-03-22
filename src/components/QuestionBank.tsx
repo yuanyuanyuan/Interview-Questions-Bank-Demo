@@ -8,13 +8,15 @@ import {
   removeFavorite
 } from '../features/favorites/favoritesSlice';
 import { fetchQuestionsAsync } from '../features/questions/questionsSlice';
+import { renderQuestionType } from '../const';
 
 const QuestionBank: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
+  // 使用 useSelector 钩子来获取 favorites.ids状态
+  const favoriteIds = useSelector((state: RootState) => state.favorites.ids);
   // 添加分页状态
   const [currentPage, setCurrentPage] = useState(1);
   const questionsPerPage = 2; // 每页显示的问题数量
-
   // 选择questions状态，loading状态和error状态
   const questions = useSelector(
     (state: RootState) => state.questions.questions
@@ -28,9 +30,6 @@ const QuestionBank: React.FC = () => {
       dispatch(fetchQuestionsAsync());
     }
   }, []);
-
-  // 使用 useSelector 钩子来获取 favorites.ids状态
-  const favoriteIds = useSelector((state: RootState) => state.favorites.ids);
 
   const handleFavorite = (questionId: number) => {
     favoriteIds.includes(questionId)
@@ -101,22 +100,33 @@ const QuestionBank: React.FC = () => {
   ); // 依赖项数组中的 setCurrentPage 会在其变化时更新这个回调
 
   return (
-    <div>
-      <nav>
-        <Link to={`/`}>index</Link>
-        <hr />
-        <Link to={`/favorites`}>favorites</Link>
+    <div className="flex flex-col min-h-screen">
+      <nav className="flex justify-between border-b p-4">
+        <Link to={`/`} className="text-blue-500 hover:text-blue-700">
+          index
+        </Link>
+        <Link to={`/favorites`} className="text-blue-500 hover:text-blue-700">
+          favorites
+        </Link>
       </nav>
-      <h2>题库</h2>
+      <h2 className="text-2xl font-bold text-center my-4">题库</h2>
 
-      <div>
-        <select name="type" onChange={handleFilterChange}>
+      <div className="flex flex-col md:flex-row p-4">
+        <select
+          name="type"
+          onChange={handleFilterChange}
+          className="mb-2 mr-4 md:mb-0 border p-2 rounded"
+        >
           <option value="">所有类型</option>
-          <option value="Multiple Choice">选择题</option>
-          <option value="True or False">判断题</option>
+          <option value="1">选择题</option>
+          <option value="2">判断题</option>
           {/* 其他类型 */}
         </select>
-        <select name="difficulty" onChange={handleFilterChange}>
+        <select
+          name="difficulty"
+          onChange={handleFilterChange}
+          className="mb-2 mr-4 md:mb-0 border p-2 rounded"
+        >
           <option value="">所有难度</option>
           <option value="Easy">简单</option>
           <option value="Medium">中等</option>
@@ -127,18 +137,18 @@ const QuestionBank: React.FC = () => {
           name="keyword"
           placeholder="搜索题目"
           onChange={handleFilterChange}
+          className="border p-2 rounded"
         />
       </div>
 
-      {/* 处理error状态 */}
-      {error && <div>Error: {error}</div>}
-      {/*/!* 处理加载中的状态 *!/*/}
+      {error && <div className="text-red-500 text-center">Error: {error}</div>}
+      {/* 处理加载中的状态 */}
       {/*{loading && <div>Loading...</div>}*/}
-      {/*/!* 处理首次加载数据 *!/*/}
+      {/* 处理首次加载数据 */}
       {/*{questions.length === 0 && !loading && <div>No questions available.</div>}*/}
 
-      <table>
-        <thead>
+      <table className="min-w-full divide-y divide-gray-200">
+        <thead className="bg-gray-50">
           <tr>
             <th>ID</th>
             <th>题目名称</th>
@@ -148,16 +158,24 @@ const QuestionBank: React.FC = () => {
             {/* 添加操作列，用于查看详情 */}
           </tr>
         </thead>
-        <tbody>
+        <tbody className="bg-white divide-y divide-gray-200">
           {paginatedQuestions.map((question) => (
             <tr key={question.id}>
               <td>{question.id}</td>
               <td>{question.title}</td>
-              <td>{question.type}</td>
+              <td>{renderQuestionType(question.type)}</td>
               <td>{question.difficulty}</td>
               <td>
-                <Link to={`/question/${question.id}`}>查看详情</Link>
-                <button onClick={() => handleFavorite(question.id)}>
+                <Link
+                  to={`/question/${question.id}`}
+                  className="text-blue-500 hover:text-blue-700"
+                >
+                  查看详情
+                </Link>
+                <button
+                  onClick={() => handleFavorite(question.id)}
+                  className="ml-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded"
+                >
                   {favoriteIds.includes(question.id) ? '取消收藏' : '收藏'}
                 </button>
               </td>
@@ -165,13 +183,13 @@ const QuestionBank: React.FC = () => {
           ))}
         </tbody>
       </table>
-      {/* 添加页码导航 */}
-      <div>
+      <div className="flex justify-between items-center p-4">
         <button
           onClick={useCallback(
             () => handlePageChange(currentPage - 1),
             [handlePageChange, currentPage]
           )}
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded"
         >
           上一页
         </button>
@@ -183,6 +201,7 @@ const QuestionBank: React.FC = () => {
             () => handlePageChange(currentPage + 1),
             [handlePageChange, currentPage]
           )}
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded"
         >
           下一页
         </button>

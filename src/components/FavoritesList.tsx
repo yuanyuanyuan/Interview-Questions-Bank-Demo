@@ -20,11 +20,13 @@ const FavoritesList: React.FC = () => {
   }, [favoriteIds]);
 
   return (
-    <ul>
+    <ul className="list-disc pl-5">
       {allQuestions
         .filter((question) => favoriteIds.includes(question.id))
         .map((question) => (
-          <li key={question.id}>{question.title}</li>
+          <li key={question.id} className="mt-1">
+            {question.title}
+          </li>
         ))}
     </ul>
   );

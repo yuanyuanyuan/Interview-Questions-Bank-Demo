@@ -3,6 +3,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { RootState } from '../app/store';
+import { renderQuestionType } from '../const';
 
 const QuestionDetails: React.FC = () => {
   // 使用 useParams 钩子获取路由参数
@@ -19,18 +20,18 @@ const QuestionDetails: React.FC = () => {
   }
 
   return (
-    <div>
-      <h2>{question.title}</h2>
-      <p>
-        <strong>题目类型:</strong> {question.type}
+    <div className="p-4">
+      <h2 className="text-2xl font-bold text-gray-800">{question.title}</h2>
+      <p className="mt-2">
+        <strong>题目类型:</strong> {renderQuestionType(question.type)}
       </p>
-      <p>
+      <p className="mt-2">
         <strong>难度:</strong> {question.difficulty}
       </p>
-      <p>
+      <p className="mt-2">
         <strong>描述:</strong> {question.description}
       </p>
-      <p>
+      <p className="mt-2">
         <strong>示例:</strong> {question.example}
       </p>
       {/* 根据需要展示更多题目详情 */}

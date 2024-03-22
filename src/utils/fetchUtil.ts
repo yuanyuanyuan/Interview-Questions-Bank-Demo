@@ -28,12 +28,13 @@ export const fetchWrapper = async <T>(
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
-    // const data = mockQuestionsOk;
-    const data = mockQuestionsErr;
-    if (data.errCode) {
-      const message = `${JSON.stringify(data)}`;
-      throw new Error(message);
-    }
+    const data = mockQuestionsOk;
+    // const data = mockQuestionsErr;
+
+    // if (data.errCode) {
+    //   const message = `${JSON.stringify(data)}`;
+    //   throw new Error(message);
+    // }
     // const data = await response.json();
     return data as T;
   } catch (error) {

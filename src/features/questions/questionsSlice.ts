@@ -23,7 +23,7 @@ export interface QuestionsState {
 }
 
 const initialState: QuestionsState = {
-  questions: [],
+  questions: JSON.parse(localStorage.getItem('questions') || '[]'),
   loading: false,
   error: undefined
 };
@@ -43,15 +43,23 @@ const questionsSlice = createSlice({
   reducers: {
     setQuestions: (state, action: PayloadAction<Question[]>) => {
       state.questions = action.payload;
+      // 将更新后的状态保存到localStorage
+      localStorage.setItem('questions', JSON.stringify(state.questions));
     },
     addQuestion: (state, action: PayloadAction<Question>) => {
       state.questions.push(action.payload);
+      // 将更新后的状态保存到localStorage
+      localStorage.setItem('questions', JSON.stringify(state.questions));
     },
     removeQuestion: (state, action: PayloadAction<number>) => {
       state.questions = state.questions.filter((q) => q.id !== action.payload);
+      // 将更新后的状态保存到localStorage
+      localStorage.setItem('questions', JSON.stringify(state.questions));
     },
     clearQuestions: (state) => {
       state.questions = [];
+      // 清除localStorage中的questions
+      localStorage.removeItem('questions');
     }
   },
   extraReducers: (builder: ActionReducerMapBuilder<QuestionsState>) => {
@@ -62,6 +70,7 @@ const questionsSlice = createSlice({
     });
     builder.addCase(fetchQuestionsAsync.fulfilled, (state, action) => {
       state.questions = action.payload;
+      localStorage.setItem('questions', JSON.stringify(state.questions));
       state.loading = false;
     });
     builder.addCase(fetchQuestionsAsync.rejected, (state, action) => {

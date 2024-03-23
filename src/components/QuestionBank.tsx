@@ -24,7 +24,7 @@ const QuestionBank: React.FC = () => {
   const loading = useSelector((state: RootState) => state.questions.loading);
   const error = useSelector((state: RootState) => state.questions.error);
   // 在QuestionBank组件内部添加新状态
-  const [sortedColumn, setSortedColumn] = useState('');
+  const [sortedColumn, setSortedColumn] = useState('type');
 
   useEffect(() => {
     // 首次加载数据时，分派fetchQuestionsAsync action
